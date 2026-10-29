@@ -191,14 +191,29 @@ with st.sidebar:
     else:
         st.error("🔴 警戒：已超過 3 次！依約進入 500~1000 計費階段，請勿無限制增加新需求。")
 
+    # Check default API key from Streamlit Secrets or Environment
+    default_key = ""
+    try:
+        if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+            default_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        pass
+    if not default_key:
+        default_key = os.environ.get("GEMINI_API_KEY", "")
+
     st.markdown("---")
-    st.subheader("🤖 AI 增強設定 (可選)")
-    api_key = st.text_input("Gemini API Key (選填)", type="password", help="若填入 API Key 可開啟智慧總結與音樂行話專業重構；不填則使用內建音樂關鍵字語意解析。")
-    if api_key:
-        os.environ["GEMINI_API_KEY"] = api_key
-        st.caption("✨ 已啟用 Gemini AI 深度提煉模式")
+    st.subheader("🤖 AI 增強設定")
+    if default_key:
+        api_key = default_key
+        st.success("✨ 已啟用雲端團隊共用 AI 引擎 (Gemini 2.5 Flash)")
+        st.caption("已由管理員配置完成，智翔與團隊可直接享受頂級提煉！")
     else:
-        st.caption("⚡ 運行於本機極速語意規則模式 (零延遲、免 Key)")
+        api_key = st.text_input("Gemini API Key (選填)", type="password", help="若填入 API Key 可開啟智慧總結與音樂行話專業重構；不填則使用內建音樂關鍵字語意解析。")
+        if api_key:
+            st.caption("✨ 已啟用自訂 Gemini AI 模式")
+        else:
+            st.caption("⚡ 運行於極速語意規則模式 (零延遲、免 Key)")
+
 
 # Main Interface
 st.title("🎛️ AI 混音修改意見智能提煉工廠")
