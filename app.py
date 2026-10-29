@@ -79,6 +79,26 @@ def rule_based_extract(text: str) -> dict:
         "uncategorized": uncategorized
     }
 
+def format_internal_items(classified_data: dict, client_text: str) -> str:
+    """Format action items for internal mixing engineer."""
+    lines = ["### 🎛️ 混音工程執行清單 (Action Items)\n"]
+    idx = 1
+    for cat, items in classified_data.get("classified", {}).items():
+        lines.append(f"#### {cat}")
+        for item in items:
+            lines.append(f"- [ ] **[項目 {idx}]** {item}")
+            idx += 1
+        lines.append("")
+        
+    if classified_data.get("uncategorized"):
+        lines.append("#### 📝 其他備註 / 聽感形容")
+        for u in classified_data["uncategorized"]:
+            lines.append(f"- 💬 {u}")
+        lines.append("")
+        
+    return "\n".join(lines)
+
+
 def analyze_with_ai_or_rules(text: str, api_key: str = None) -> tuple:
     """Analyze using Gemini AI if key provided, else fallback to rule-based parser."""
     if api_key:
@@ -225,20 +245,23 @@ with col1:
     st.subheader("📥 1. 貼入微信語音轉文字內容")
     sample_text = "阿葆智翔啊，那個前奏吉他好像有點太亮了，聽起來有點刺耳。副歌那邊主唱聲音有點被鼓吃掉，能不能把人聲推前面一點？然後最後面的殘響有點太濕了，聽起來濁濁的，整體低音再扎實一點點就好。"
     
+    if "input_text" not in st.session_state:
+        st.session_state["input_text"] = ""
+        
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        if st.button("帶入範例文字測試"):
+            st.session_state["input_text"] = sample_text
+    with col_btn2:
+        if st.button("清空輸入"):
+            st.session_state["input_text"] = ""
+
     user_input = st.text_area(
         "直接在微信對話框長按語音「轉文字」後，複製貼在這裡：",
+        value=st.session_state["input_text"],
         height=220,
         placeholder="例如：那個副歌人聲太小了啦，然後大鼓聽起來不夠重，結尾回音太長..."
     )
-    
-    col_btn1, col_btn2 = st.columns(2)
-    with col_btn1:
-        load_sample = st.button("帶入範例文字測試")
-    with col_btn2:
-        clear_input = st.button("清空輸入")
-
-    if load_sample:
-        user_input = sample_text
 
     st.markdown("---")
     st.info("💡 **小撇步**：客戶通常習慣一小句一小句發語音，你可以把微信上轉出來的多段文字一口氣全選複製、貼在上面，系統會自動融合成一張完整工單！")
