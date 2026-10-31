@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🎛️ AI 混音修改意見智能提煉工廠 | 胤樂音樂</title>
+  <style>
+    :root {
+      --bg-base: #0a0d14;
+      --bg-card: #121824;
+      --bg-surface: #182030;
+      --border: #222d42;
+      --border-focus: #00f2fe;
+      --text-main: #f1f5f9;
+      --text-sub: #94a3b8;
+      --text-muted: #64748b;
+      --primary: #00f2fe;
+      --accent: #ff3366;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #161f33 0%, #0f1523 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+    }
+
+    .badge-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(0, 242, 254, 0.12);
+      color: var(--primary);
+      border: 1px solid rgba(0, 242, 254, 0.25);
+    }
+
+    .pill-green {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--green);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .sub-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* Settings & Guard Grid */
+    .settings-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    input, select, textarea {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 10px 12px;
+      outline: none;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 242, 254, 0.2);
+    }
+
+    /* Guard Banner */
+    .guard-banner {
+      grid-column: 1 / -1;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .guard-green {
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+
+    .guard-amber {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .guard-red {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    /* Main Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 820px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), #00b4d8);
+      color: #05131e;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 14px rgba(0, 242, 254, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: var(--bg-surface);
+      color: var(--text-sub);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: #202b40;
+      color: var(--text-main);
+    }
+
+    .btn-copy {
+      background: #1e293b;
+      color: #38bdf8;
+      border: 1px solid #334155;
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+
+    .btn-copy:hover {
+      background: #0284c7;
+      color: #fff;
+    }
+
+    textarea.raw-input {
+      height: 220px;
+      resize: vertical;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .tip-box {
+      background: rgba(0, 242, 254, 0.05);
+      border: 1px dashed rgba(0, 242, 254, 0.25);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 12px;
+      color: #7dd3fc;
+      line-height: 1.5;
+    }
+
+    /* Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 6px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+
+    .tab-btn.active {
+      background: var(--bg-surface);
+      color: var(--primary);
+      border-color: var(--border);
+      font-weight: 700;
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Output Displays */
+    .output-box {
+      background: var(--bg-base);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-main);
+      min-height: 240px;
+      max-height: 480px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Breakdown Tags */
+    .tag-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tag-group {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+    }
+
+    .tag-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .tag-title {
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-count {
+      font-size: 11px;
+      background: #0a0d14;
+      padding: 2px 8px;
+      border-radius: 12px;
+      color: var(--text-muted);
+    }
+
+    .item-bullet {
+      font-size: 12px;
+      color: var(--text-sub);
+      padding-left: 12px;
+      border-left: 2px solid var(--border);
+      margin-top: 4px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(16, 185, 129, 0.95);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      z-index: 9999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 20px;
+      padding-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="badge-bar">
+      <span class="pill pill-green">● 永久在線 0 秒秒開</span>
+      <span class="pill">免伺服器 · 永不休眠</span>
+      <span class="pill">微信語音一鍵提煉</span>
+    </div>
+    <h1>🎛️ AI 混音修改意見智能提煉工廠</h1>
+    <p class="sub-desc">將微信語音轉文字的口語碎念與形容詞，一秒提煉為「混音師內部執行清單」與「標準客戶確認覆盤文案」。</p>
+  </header>
+
+  <!-- Settings & Scope Guard -->
+  <div class="settings-bar">
+    <div class="form-group">
+      <label for="songName">🎵 歌曲名稱 / 案名</label>
+      <input type="text" id="songName" value="祝你失戀快樂" placeholder="輸入歌曲名稱">
+    </div>
+
+    <div class="form-group">
+      <label for="clientName">👤 客戶稱呼</label>
+      <input type="text" id="clientName" value="老師 / 外部客戶" placeholder="例如：林老師、智翔">
+    </div>
+
+    <div class="form-group">
+      <label for="versionSelect">🛡️ 修改進度守衛</label>
+      <select id="versionSelect">
+        <option value="v1">v1 (初版微調)</option>
+        <option value="v2" selected>v2 (第 2 次修改)</option>
+        <option value="v3">v3 (第 3 次修改 - 免費上限)</option>
+        <option value="v4">v4 (第 4 次 - 進入計費階段)</option>
+        <option value="v5+">v5+ (極限止損版)</option>
+      </select>
+    </div>
+
+    <div id="guardBanner" class="guard-banner guard-green">
+      🟢 正常修改範圍（包含在合約 / 預設次數內）
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div class="main-grid">
+    <!-- Left Column: Input -->
+    <div class="card">
+      <div class="card-title">
+        <span>📥 1. 貼入微信語音轉文字</span>
+        <div class="btn-row">
+          <button type="button" class="btn-ghost" id="btnSample">帶入範例</button>
+          <button type="button" class="btn-ghost" id="btnClear">清空</button>
+        </div>
+      </div>
+
+      <textarea id="rawInput" class="raw-input" placeholder="直接在微信長按客戶的語音「轉文字」，一口氣全選複製並貼在這裡...&#10;&#10;例如：阿葆智翔啊，那個前奏吉他好像有點太亮了，副歌主唱聲音被大鼓吃掉，能不能把人聲推前一點？然後結尾殘響太濕了..."></textarea>
+
+      <div class="tip-box">
+        💡 <strong>智翔專屬小撇步</strong>：客戶如果連續發好幾條語音，在微信上長按每一則轉文字後，直接「一口氣全選複製」貼進來，系統會自動拆解去雜質、融合成一張完整工單！
+      </div>
+    </div>
+
+    <!-- Right Column: Outputs -->
+    <div class="card">
+      <div class="card-title">
+        <span>📤 2. 智能提煉成果</span>
+        <div class="btn-row">
+          <button type="button" class="btn-primary" id="btnExtract">⚡ 一秒提煉</button>
+        </div>
+      </div>
+
+      <!-- Tabs Bar -->
+      <div class="tabs-bar">
+        <button type="button" class="tab-btn active" data-tab="tabEngineer">📋 混音師執行清單</button>
+        <button type="button" class="tab-btn" data-tab="tabClient">💬 客戶回覆 (貼微信)</button>
+        <button type="button" class="tab-btn" data-tab="tabBreakdown">🔍 軌道分析</button>
+      </div>
+
+      <!-- Tab 1: Engineer Action Items -->
+      <div id="tabEngineer" class="tab-content active">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; color:var(--text-sub);">內部工程師專用 Action Items</span>
+          <button type="button" class="btn-copy" id="btnCopyEngineer">📋 複製清單</button>
+        </div>
+        <div id="outputEngineer" class="output-box">👈 請在左側貼入文字，點擊「一秒提煉」。</div>
+      </div>
+
+      <!-- Tab 2: Client Reply -->
+      <div id="tabClient" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; color:var(--text-sub);">🛡️ 帶有邊界定錨之專業回覆話術</span>
+          <button type="button" class="btn-copy" id="btnCopyClient">💬 複製話術</button>
+        </div>
+        <div id="outputClient" class="output-box">👈 請在左側貼入文字，點擊「一秒提煉」。</div>
+      </div>
+
+      <!-- Tab 3: Breakdown -->
+      <div id="tabBreakdown" class="tab-content">
+        <div id="outputBreakdown" class="tag-grid">
+          <div style="color:var(--text-muted); font-size:13px;">尚未進行分析。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    林从胤音樂專案 · 商業混音管線升級組 · 胤樂音樂工作流交付中心<br>
+    ⚡ 離線靜態前端架構 · 永久可用 · 零維護成本 · Zero Server Overhead
+  </footer>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast">已成功複製到剪貼簿！</div>
+
+<script>
+  // 1. Audio Semantic Dictionary
+  const KEYWORDS_MAP = {
+    "人聲/主唱 (Vocal)": ["人聲", "主唱", "唱歌", "聲音", "嘴型", "齒音", "太小聲", "大聲", "突兀", "悶", "乾", "濕", "靠前", "推前", "後退", "貼耳", "vo口", "vocal", "和聲", "呼吸", "音爆", "唱腔"],
+    "鼓組/節奏 (Drums)": ["鼓", "大鼓", "小鼓", "hihat", "鈸", "節奏", "punch", "重音", "力道", "敲擊", "太響", "太炸", "kick", "snare", "hat", "tom"],
+    "低頻/貝斯 (Bass & Sub)": ["低音", "bass", "貝斯", "下潛", "低頻", "轟", "糊", "濁", "髒", "肥", "太沉", "不夠重"],
+    "吉他/樂器 (Instruments)": ["吉他", "鋼琴", "弦樂", "合成器", "鍵盤", "伴奏", "solo", "鋪底", "墊樂", "西塔", "木吉他", "電吉他", "層次"],
+    "空間/殘響 (Space & Reverb)": ["殘響", "reverb", "空間", "回音", "delay", "延遲", "太濕", "太乾", "空靈", "立體", "廣度", "寬度", "水水的", "太水"],
+    "動態與平衡 (Balance & Master)": ["整體", "大氣", "壓得太死", "音量", "總音量", "爆了", "破音", "動態", "太大聲", "太小聲", "細節", "刺耳", "平衡"]
+  };
+
+  // 2. Elements
+  const rawInput = document.getElementById('rawInput');
+  const songName = document.getElementById('songName');
+  const clientName = document.getElementById('clientName');
+  const versionSelect = document.getElementById('versionSelect');
+  const guardBanner = document.getElementById('guardBanner');
+
+  const btnSample = document.getElementById('btnSample');
+  const btnClear = document.getElementById('btnClear');
+  const btnExtract = document.getElementById('btnExtract');
+
+  const outputEngineer = document.getElementById('outputEngineer');
+  const outputClient = document.getElementById('outputClient');
+  const outputBreakdown = document.getElementById('outputBreakdown');
+
+  const btnCopyEngineer = document.getElementById('btnCopyEngineer');
+  const btnCopyClient = document.getElementById('btnCopyClient');
+  const toast = document.getElementById('toast');
+
+  // 3. Guard Banner Controller
+  versionSelect.addEventListener('change', () => {
+    const v = versionSelect.value;
+    guardBanner.className = 'guard-banner';
+    if (v === 'v1' || v === 'v2') {
+      guardBanner.classList.add('guard-green');
+      guardBanner.textContent = '🟢 正常修改範圍（包含在合約 / 預設次數內）';
+    } else if (v === 'v3') {
+      guardBanner.classList.add('guard-amber');
+      guardBanner.textContent = '🟡 注意：已達第 3 次修改上限！本次後若再改需另計費用。';
+    } else {
+      guardBanner.classList.add('guard-red');
+      guardBanner.textContent = '🔴 警戒：已超過 3 次！依約進入 500~1000 計費階段，請勿無限制增加新需求。';
+    }
+    // Re-render client reply if there is output
+    if (rawInput.value.trim()) runExtraction();
+  });
+
+  // 4. Sample & Clear
+  const SAMPLE_TEXT = `耳機 BeyerDynamic DT770 Pro
+「祝你失戀快樂」
+1) vocal有些地方水水的, 麻煩優化一下
+2) 和聲音量加一點
+3) 鼓組調整必須包含hat/hat2, 不然其他細節就會減弱
+4) 02:34, 人聲前一句的呼吸要刪乾淨，02:36, 和聲的呼吸要刪掉
+5) 04:19, 秒有一個音爆, 應該是vocal的
+除了鼓可以照目前加強, 其餘伴奏建議按照原先配置就好，一些原本該有的細節都變淡了`;
+
+  btnSample.addEventListener('click', () => {
+    rawInput.value = SAMPLE_TEXT;
+    runExtraction();
+  });
+
+  btnClear.addEventListener('click', () => {
+    rawInput.value = '';
+    outputEngineer.textContent = '👈 請在左側貼入文字，點擊「一秒提煉」。';
+    outputClient.textContent = '👈 請在左側貼入文字，點擊「一秒提煉」。';
+    outputBreakdown.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">尚未進行分析。</div>';
+  });
+
+  // 5. Extraction Algorithm
+  function runExtraction() {
+    const text = rawInput.value.trim();
+    if (!text) {
+      showToast('請先貼入文字！');
+      return;
+    }
+
+    // Split into sentences
+    const rawSentences = text.split(/[，。！？\n；,!?\d+\)]+/);
+    const classified = {};
+    Object.keys(KEYWORDS_MAP).forEach(k => classified[k] = []);
+    const uncategorized = [];
+
+    rawSentences.forEach(s => {
+      s = s.trim();
+      if (!s || s.length < 2) return;
+      let matched = false;
+      for (const [category, words] of Object.entries(KEYWORDS_MAP)) {
+        if (words.some(w => s.toLowerCase().includes(w.toLowerCase()))) {
+          classified[category].push(s);
+          matched = true;
+        }
+      }
+      if (!matched) {
+        uncategorized.push(s);
+      }
+    });
+
+    const song = songName.value.trim() || '專案歌曲';
+    const client = clientName.value.trim() || '老師';
+    const version = versionSelect.value;
+
+    // Build Engineer Output
+    let engText = `### 🎛️ 《${song}》混音工程執行清單 (${version})\n\n`;
+    let taskIdx = 1;
+
+    for (const [category, items] of Object.entries(classified)) {
+      if (items.length > 0) {
+        engText += `#### ${category}\n`;
+        items.forEach(it => {
+          engText += `- [ ] **[項目 ${taskIdx}]** ${it}\n`;
+          taskIdx++;
+        });
+        engText += `\n`;
+      }
+    }
+
+    if (uncategorized.length > 0) {
+      engText += `#### 📝 其他備註 / 聽感細節\n`;
+      uncategorized.forEach(u => {
+        engText += `- 💬 ${u}\n`;
+      });
+      engText += `\n`;
+    }
+
+    outputEngineer.textContent = engText;
+
+    // Build Client Reply
+    const clientItems = [];
+    let cIdx = 1;
+    for (const [category, items] of Object.entries(classified)) {
+      if (items.length > 0) {
+        const shortCat = category.split(' ')[0];
+        items.forEach(it => {
+          clientItems.push(`${cIdx}. 【${shortCat}】${it}`);
+          cIdx++;
+        });
+      }
+    }
+    if (clientItems.length === 0 && uncategorized.length > 0) {
+      uncategorized.forEach(u => {
+        clientItems.push(`${cIdx}. ${u}`);
+        cIdx++;
+      });
+    }
+
+    const summaryText = clientItems.length > 0 ? clientItems.join('\n') : '1. 細部音色平衡與空間感優化';
+
+    const clientMsg = `${client}您好！已收到《${song}》的修改想法，智翔與團隊已幫您梳理出本次【${version}】具體修改清單：
+
+${summaryText}
+
+📌 為確保修改方向精確到位，我們將依上述清單逐一精調。若確認無誤，工程師立刻啟動調整並於完成後第一時間回傳給您試聽！謝謝您！`;
+
+    outputClient.textContent = clientMsg;
+
+    // Build Breakdown Tab
+    let breakdownHTML = '';
+    for (const [category, items] of Object.entries(classified)) {
+      if (items.length > 0) {
+        breakdownHTML += `
+          <div class="tag-group">
+            <div class="tag-header">
+              <span class="tag-title">🎧 ${category}</span>
+              <span class="tag-count">${items.length} 項</span>
+            </div>
+            ${items.map(it => `<div class="item-bullet">${it}</div>`).join('')}
+          </div>
+        `;
+      }
+    }
+    if (uncategorized.length > 0) {
+      breakdownHTML += `
+        <div class="tag-group">
+          <div class="tag-header">
+            <span class="tag-title">💬 其他/口語備註</span>
+            <span class="tag-count">${uncategorized.length} 項</span>
+          </div>
+          ${uncategorized.map(it => `<div class="item-bullet">${it}</div>`).join('')}
+        </div>
+      `;
+    }
+    outputBreakdown.innerHTML = breakdownHTML || '<div style="color:var(--text-muted); font-size:13px;">無特定關鍵字匹配。</div>';
+  }
+
+  btnExtract.addEventListener('click', () => {
+    runExtraction();
+    showToast('✨ 提煉完成！');
+  });
+
+  // 6. Tabs Controller
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // 7. Clipboard Copy
+  function copyText(str) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(str).then(() => {
+        showToast('✅ 已成功複製到剪貼簿！');
+      }).catch(() => fallbackCopy(str));
+    } else {
+      fallbackCopy(str);
+    }
+  }
+
+  function fallbackCopy(str) {
+    const el = document.createElement('textarea');
+    el.value = str;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast('✅ 已成功複製到剪貼簿！');
+  }
+
+  btnCopyEngineer.addEventListener('click', () => {
+    copyText(outputEngineer.textContent);
+  });
+
+  btnCopyClient.addEventListener('click', () => {
+    copyText(outputClient.textContent);
+  });
+
+  // 8. Toast Helper
+  let toastTimer = null;
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+
+  // Auto run if input has content on load
+  if (rawInput.value.trim()) {
+    runExtraction();
+  }
+</script>
+
+</body>
+</html>
