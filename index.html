@@ -913,9 +913,13 @@
       if (items.length > 0) {
         engText += `#### ${category}\n`;
         items.forEach(it => {
+          let cleanText = it.text;
+          if (it.time) {
+            cleanText = cleanText.replace(new RegExp('^\\s*' + it.time.replace(/([.*+?^=!:${}()|\\[\\]\\/\\\\])/g, "\\$1") + '\\s*'), '');
+          }
           let timePrefix = it.time ? `⏱️ ${it.time} ` : '';
-          let dbPrefix = it.db ? `🎚️ ${it.db} ` : '';
-          engText += `- [ ] **[項目 ${taskIdx}]** ${timePrefix}${dbPrefix}${it.text}\n`;
+          let dbPrefix = it.db && !cleanText.includes(it.db) ? `🎚️ ${it.db} ` : '';
+          engText += `- [ ] **[項目 ${taskIdx}]** ${timePrefix}${dbPrefix}${cleanText}\n`;
           taskIdx++;
         });
         engText += `\n`;
@@ -942,8 +946,12 @@
       items.forEach(it => {
         if (!seenTexts.has(it.text)) {
           seenTexts.add(it.text);
+          let cleanText = it.text;
+          if (it.time) {
+            cleanText = cleanText.replace(new RegExp('^\\s*' + it.time.replace(/([.*+?^=!:${}()|\\[\\]\\/\\\\])/g, "\\$1") + '\\s*'), '');
+          }
           let timeTag = it.time ? `[${it.time}] ` : '';
-          clientItems.push(`${cIdx}. 【${shortCat}】${timeTag}${it.text}`);
+          clientItems.push(`${cIdx}. 【${shortCat}】${timeTag}${cleanText}`);
           cIdx++;
         }
       });
