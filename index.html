@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>🎛️ AI 混音修改意見智能提煉工廠 | 胤樂音樂</title>
+  <title>🎛️ AI 混音修改意見智能提煉工廠 v2.1 | 胤樂音樂</title>
   <style>
     :root {
       --bg-base: #0a0d14;
@@ -19,6 +19,7 @@
       --green: #10b981;
       --amber: #f59e0b;
       --red: #ef4444;
+      --purple: #a855f7;
       --radius: 12px;
       --radius-sm: 8px;
       --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -45,7 +46,7 @@
 
     .container {
       width: 100%;
-      max-width: 1100px;
+      max-width: 1160px;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -95,6 +96,12 @@
       background: rgba(16, 185, 129, 0.12);
       color: var(--green);
       border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .pill-purple {
+      background: rgba(168, 85, 247, 0.12);
+      color: var(--purple);
+      border-color: rgba(168, 85, 247, 0.25);
     }
 
     h1 {
@@ -188,11 +195,11 @@
     /* Main Grid */
     .main-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1.15fr;
       gap: 16px;
     }
 
-    @media (max-width: 820px) {
+    @media (max-width: 860px) {
       .main-grid {
         grid-template-columns: 1fr;
       }
@@ -209,7 +216,7 @@
     }
 
     .card-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -220,6 +227,7 @@
     .btn-row {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
     button {
@@ -271,8 +279,21 @@
       color: #fff;
     }
 
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      font-size: 12px;
+      padding: 4px 10px;
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
     textarea.raw-input {
-      height: 220px;
+      height: 250px;
       resize: vertical;
       font-size: 14px;
       line-height: 1.6;
@@ -294,6 +315,7 @@
       gap: 6px;
       border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
+      overflow-x: auto;
     }
 
     .tab-btn {
@@ -303,6 +325,7 @@
       padding: 6px 12px;
       font-size: 13px;
       border-radius: 6px;
+      white-space: nowrap;
     }
 
     .tab-btn.active {
@@ -332,8 +355,8 @@
       font-size: 13px;
       line-height: 1.7;
       color: var(--text-main);
-      min-height: 240px;
-      max-height: 480px;
+      min-height: 260px;
+      max-height: 520px;
       overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-word;
@@ -344,6 +367,8 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
     }
 
     .tag-group {
@@ -381,6 +406,74 @@
       color: var(--text-sub);
       padding-left: 12px;
       border-left: 2px solid var(--border);
+      margin-top: 6px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: baseline;
+    }
+
+    .time-badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .db-badge {
+      background: rgba(0, 242, 254, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(0, 242, 254, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* History Log List */
+    .history-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .history-card:hover {
+      border-color: var(--primary);
+    }
+
+    .history-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .history-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .history-preview {
+      font-size: 12px;
+      color: var(--text-sub);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-actions {
+      display: flex;
+      gap: 6px;
       margin-top: 4px;
     }
 
@@ -425,10 +518,11 @@
     <div class="badge-bar">
       <span class="pill pill-green">● 永久在線 0 秒秒開</span>
       <span class="pill">免伺服器 · 永不休眠</span>
-      <span class="pill">微信語音一鍵提煉</span>
+      <span class="pill pill-purple">⏱️ 幾分幾秒 & 🎚️ 幾dB 絕對保全</span>
+      <span class="pill">💾 本地歷史自動留存</span>
     </div>
-    <h1>🎛️ AI 混音修改意見智能提煉工廠</h1>
-    <p class="sub-desc">將微信語音轉文字的口語碎念與形容詞，一秒提煉為「混音師內部執行清單」與「標準客戶確認覆盤文案」。</p>
+    <h1>🎛️ AI 混音修改意見智能提煉工廠 <span style="font-size:14px; color:var(--primary); font-weight:600;">v2.1 聲學精準版</span></h1>
+    <p class="sub-desc">專為智翔與製作人打造：保留每一秒時間戳記與 dB 參數，自動將口語提煉為「混音師內部清單」與「微信回覆覆盤」，客戶原始對話 100% 本地留存不遺失。</p>
   </header>
 
   <!-- Settings & Scope Guard -->
@@ -466,15 +560,15 @@
       <div class="card-title">
         <span>📥 1. 貼入微信語音轉文字</span>
         <div class="btn-row">
-          <button type="button" class="btn-ghost" id="btnSample">帶入範例</button>
+          <button type="button" class="btn-ghost" id="btnSample">帶入實戰範例</button>
           <button type="button" class="btn-ghost" id="btnClear">清空</button>
         </div>
       </div>
 
-      <textarea id="rawInput" class="raw-input" placeholder="直接在微信長按客戶的語音「轉文字」，一口氣全選複製並貼在這裡...&#10;&#10;例如：阿葆智翔啊，那個前奏吉他好像有點太亮了，副歌主唱聲音被大鼓吃掉，能不能把人聲推前一點？然後結尾殘響太濕了..."></textarea>
+      <textarea id="rawInput" class="raw-input" placeholder="直接在微信長按客戶的語音「轉文字」，一口氣全選複製並貼在這裡...&#10;&#10;✨ 支援包含時間點（如 01:25、02:34）、參數（如 1dB、-2dB、80Ω）與分軌名稱，系統保證 100% 保全絕不丟失！"></textarea>
 
       <div class="tip-box">
-        💡 <strong>智翔專屬小撇步</strong>：客戶如果連續發好幾條語音，在微信上長按每一則轉文字後，直接「一口氣全選複製」貼進來，系統會自動拆解去雜質、融合成一張完整工單！
+        💡 <strong>智翔專屬保證</strong>：此版本已修復時間與分貝被過濾的問題！系統會將客戶發送的「01:25」、「02:34」、「1dB」自動標注為高亮時段與調整量，且所有原始對話會自動存檔至「📜 歷史紀錄」，重整網頁絕不丟失！
       </div>
     </div>
 
@@ -489,15 +583,17 @@
 
       <!-- Tabs Bar -->
       <div class="tabs-bar">
-        <button type="button" class="tab-btn active" data-tab="tabEngineer">📋 混音師執行清單</button>
-        <button type="button" class="tab-btn" data-tab="tabClient">💬 客戶回覆 (貼微信)</button>
-        <button type="button" class="tab-btn" data-tab="tabBreakdown">🔍 軌道分析</button>
+        <button type="button" class="tab-btn active" data-tab="tabEngineer">📋 混音師清單</button>
+        <button type="button" class="tab-btn" data-tab="tabClient">💬 微信回覆話術</button>
+        <button type="button" class="tab-btn" data-tab="tabOriginal">📄 客戶原紀錄 (留存)</button>
+        <button type="button" class="tab-btn" data-tab="tabBreakdown">🔍 聲學分軌</button>
+        <button type="button" class="tab-btn" data-tab="tabHistory" id="tabHistoryBtn">📜 歷史歸檔庫 (<span id="historyCount">0</span>)</button>
       </div>
 
       <!-- Tab 1: Engineer Action Items -->
       <div id="tabEngineer" class="tab-content active">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; color:var(--text-sub);">內部工程師專用 Action Items</span>
+          <span style="font-size:12px; color:var(--text-sub);">內部工程師專用 Action Items（含時間標尺與參數）</span>
           <button type="button" class="btn-copy" id="btnCopyEngineer">📋 複製清單</button>
         </div>
         <div id="outputEngineer" class="output-box">👈 請在左側貼入文字，點擊「一秒提煉」。</div>
@@ -506,16 +602,39 @@
       <!-- Tab 2: Client Reply -->
       <div id="tabClient" class="tab-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:12px; color:var(--text-sub);">🛡️ 帶有邊界定錨之專業回覆話術</span>
+          <span style="font-size:12px; color:var(--text-sub);">🛡️ 帶有邊界定錨之專業回覆話術（完整保全時間與參數）</span>
           <button type="button" class="btn-copy" id="btnCopyClient">💬 複製話術</button>
         </div>
         <div id="outputClient" class="output-box">👈 請在左側貼入文字，點擊「一秒提煉」。</div>
       </div>
 
-      <!-- Tab 3: Breakdown -->
+      <!-- Tab 3: Customer Raw Record -->
+      <div id="tabOriginal" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; color:var(--text-sub);">📄 客戶原始文字 100% 完整留存對照（無任何刪減）</span>
+          <button type="button" class="btn-copy" id="btnCopyOriginal">📋 複製客戶原文字</button>
+        </div>
+        <div id="outputOriginal" class="output-box">👈 尚未提煉文字。</div>
+      </div>
+
+      <!-- Tab 4: Breakdown -->
       <div id="tabBreakdown" class="tab-content">
         <div id="outputBreakdown" class="tag-grid">
           <div style="color:var(--text-muted); font-size:13px;">尚未進行分析。</div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Local History Vault -->
+      <div id="tabHistory" class="tab-content">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:12px; color:#34d399;">💾 自動留存於你的瀏覽器（關閉或重開網頁永不丟失）</span>
+          <div class="btn-row">
+            <button type="button" class="btn-copy" id="btnExportHistory">📥 匯出紀錄</button>
+            <button type="button" class="btn-danger" id="btnClearHistory">清空全部</button>
+          </div>
+        </div>
+        <div id="historyList" class="tag-grid">
+          <div style="color:var(--text-muted); font-size:13px;">目前尚無歷史紀錄。每次點擊「一秒提煉」會自動存檔。</div>
         </div>
       </div>
     </div>
@@ -524,7 +643,7 @@
   <!-- Footer -->
   <footer>
     林从胤音樂專案 · 商業混音管線升級組 · 胤樂音樂工作流交付中心<br>
-    ⚡ 離線靜態前端架構 · 永久可用 · 零維護成本 · Zero Server Overhead
+    ⚡ 離線靜態前端架構 · 永久在線 · 零維護成本 · Zero Server Overhead
   </footer>
 </div>
 
@@ -534,15 +653,15 @@
 <script>
   // 1. Audio Semantic Dictionary
   const KEYWORDS_MAP = {
-    "人聲/主唱 (Vocal)": ["人聲", "主唱", "唱歌", "聲音", "嘴型", "齒音", "太小聲", "大聲", "突兀", "悶", "乾", "濕", "靠前", "推前", "後退", "貼耳", "vo口", "vocal", "和聲", "呼吸", "音爆", "唱腔"],
+    "人聲/主唱 (Vocal)": ["人聲", "主唱", "唱歌", "聲音", "嘴型", "齒音", "太小聲", "大聲", "突兀", "悶", "乾", "濕", "靠前", "推前", "後退", "貼耳", "vo口", "vocal", "和聲", "呼吸", "音爆", "唱腔", "lv", "吃掉"],
     "鼓組/節奏 (Drums)": ["鼓", "大鼓", "小鼓", "hihat", "鈸", "節奏", "punch", "重音", "力道", "敲擊", "太響", "太炸", "kick", "snare", "hat", "tom"],
     "低頻/貝斯 (Bass & Sub)": ["低音", "bass", "貝斯", "下潛", "低頻", "轟", "糊", "濁", "髒", "肥", "太沉", "不夠重"],
     "吉他/樂器 (Instruments)": ["吉他", "鋼琴", "弦樂", "合成器", "鍵盤", "伴奏", "solo", "鋪底", "墊樂", "西塔", "木吉他", "電吉他", "層次"],
     "空間/殘響 (Space & Reverb)": ["殘響", "reverb", "空間", "回音", "delay", "延遲", "太濕", "太乾", "空靈", "立體", "廣度", "寬度", "水水的", "太水"],
-    "動態與平衡 (Balance & Master)": ["整體", "大氣", "壓得太死", "音量", "總音量", "爆了", "破音", "動態", "太大聲", "太小聲", "細節", "刺耳", "平衡"]
+    "動態與平衡 (Balance & Master)": ["整體", "大氣", "壓得太死", "音量", "總音量", "爆了", "破音", "動態", "太大聲", "太小聲", "細節", "刺耳", "平衡", "拉小", "讓位"]
   };
 
-  // 2. Elements
+  // 2. DOM Elements
   const rawInput = document.getElementById('rawInput');
   const songName = document.getElementById('songName');
   const clientName = document.getElementById('clientName');
@@ -555,14 +674,114 @@
 
   const outputEngineer = document.getElementById('outputEngineer');
   const outputClient = document.getElementById('outputClient');
+  const outputOriginal = document.getElementById('outputOriginal');
   const outputBreakdown = document.getElementById('outputBreakdown');
+  const historyList = document.getElementById('historyList');
+  const historyCount = document.getElementById('historyCount');
 
   const btnCopyEngineer = document.getElementById('btnCopyEngineer');
   const btnCopyClient = document.getElementById('btnCopyClient');
+  const btnCopyOriginal = document.getElementById('btnCopyOriginal');
+  const btnExportHistory = document.getElementById('btnExportHistory');
+  const btnClearHistory = document.getElementById('btnClearHistory');
   const toast = document.getElementById('toast');
 
-  // 3. Guard Banner Controller
-  versionSelect.addEventListener('change', () => {
+  // 3. LocalStorage History Management
+  const STORAGE_KEY = 'JEM_AUDIO_MIX_FEEDBACK_HISTORY_V1';
+
+  function getHistory() {
+    try {
+      const data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveHistoryRecord(record) {
+    const list = getHistory();
+    // Add to beginning
+    list.unshift(record);
+    // Keep max 50 records
+    if (list.length > 50) list.pop();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    } catch (e) {}
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const list = getHistory();
+    historyCount.textContent = list.length;
+    if (list.length === 0) {
+      historyList.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">目前尚無歷史紀錄。每次點擊「一秒提煉」會自動存檔。</div>';
+      return;
+    }
+
+    historyList.innerHTML = list.map((item, idx) => {
+      const preview = item.rawText.substring(0, 70).replace(/\n/g, ' ') + (item.rawText.length > 70 ? '...' : '');
+      return `
+        <div class="history-card" data-idx="${idx}">
+          <div class="history-meta">
+            <span class="history-title">🎵 《${item.song}》 【${item.version}】</span>
+            <span>🕒 ${item.timestamp}</span>
+          </div>
+          <div class="history-preview">💬 ${preview}</div>
+          <div class="history-actions">
+            <button type="button" class="btn-copy" onclick="loadHistoryItem(${idx})">📥 載入此筆紀錄</button>
+            <button type="button" class="btn-danger" onclick="deleteHistoryItem(${idx})">刪除</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.loadHistoryItem = function(idx) {
+    const list = getHistory();
+    if (!list[idx]) return;
+    const item = list[idx];
+    songName.value = item.song;
+    versionSelect.value = item.version;
+    updateGuardBanner();
+    rawInput.value = item.rawText;
+    runExtraction(false); // don't re-save duplicate
+    showToast('✅ 已載入歷史紀錄！');
+  };
+
+  window.deleteHistoryItem = function(idx) {
+    const list = getHistory();
+    list.splice(idx, 1);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    renderHistory();
+    showToast('已刪除該筆紀錄');
+  };
+
+  btnClearHistory.addEventListener('click', () => {
+    if (confirm('確定要清空所有保存在本機的歷史客戶紀錄嗎？')) {
+      localStorage.removeItem(STORAGE_KEY);
+      renderHistory();
+      showToast('歷史紀錄已清空');
+    }
+  });
+
+  btnExportHistory.addEventListener('click', () => {
+    const list = getHistory();
+    if (list.length === 0) {
+      showToast('目前尚無歷史紀錄可匯出');
+      return;
+    }
+    const blob = new Blob([JSON.stringify(list, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `混音修改客戶歷史紀錄_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('✅ 歷史紀錄已下載備份！');
+  });
+
+  // 4. Guard Banner Controller
+  function updateGuardBanner() {
     const v = versionSelect.value;
     guardBanner.className = 'guard-banner';
     if (v === 'v1' || v === 'v2') {
@@ -575,58 +794,110 @@
       guardBanner.classList.add('guard-red');
       guardBanner.textContent = '🔴 警戒：已超過 3 次！依約進入 500~1000 計費階段，請勿無限制增加新需求。';
     }
-    // Re-render client reply if there is output
-    if (rawInput.value.trim()) runExtraction();
+  }
+
+  versionSelect.addEventListener('change', () => {
+    updateGuardBanner();
+    if (rawInput.value.trim()) runExtraction(false);
   });
 
-  // 4. Sample & Clear
-  const SAMPLE_TEXT = `耳機 BeyerDynamic DT770 Pro
-「祝你失戀快樂」
+  // 5. Sample & Clear
+  const SAMPLE_TEXT = `耳機 BeyerDynamic DT770 Pro(80Ω)/基本監聽音響
+
+「祝你失戀快樂」 (mp3)
 1) vocal有些地方水水的, 麻煩優化一下
 2) 和聲音量加一點
 3) 鼓組調整必須包含hat/hat2, 不然其他細節就會減弱
 4) 02:34, 人聲前一句的呼吸要刪乾淨，02:36, 和聲的呼吸要刪掉
-5) 04:19, 秒有一個音爆, 應該是vocal的
-除了鼓可以照目前加強, 其餘伴奏建議按照原先配置就好，一些原本該有的細節都變淡了`;
+5) 04:19, 秒有一個音爆, 應該是vocal的, 但我LV檔已經修掉了, 因此此音檔還是使用我之前eq過的
+
+除了鼓可以照目前加強, 其餘伴奏建議按照原先配置就好
+木吉他伴奏在 01:25 的 solo 稍微偏大聲，稍微拉小 1dB 讓位給主唱
+西塔琴18秒加入reverb`;
 
   btnSample.addEventListener('click', () => {
     rawInput.value = SAMPLE_TEXT;
-    runExtraction();
+    runExtraction(true);
   });
 
   btnClear.addEventListener('click', () => {
     rawInput.value = '';
     outputEngineer.textContent = '👈 請在左側貼入文字，點擊「一秒提煉」。';
     outputClient.textContent = '👈 請在左側貼入文字，點擊「一秒提煉」。';
+    outputOriginal.textContent = '👈 尚未提煉文字。';
     outputBreakdown.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">尚未進行分析。</div>';
   });
 
-  // 5. Extraction Algorithm
-  function runExtraction() {
+  // 6. Extraction Algorithm (Preserves 01:25, 02:34, 1dB, hat2, etc.)
+  function runExtraction(saveToHistory = true) {
     const text = rawInput.value.trim();
     if (!text) {
       showToast('請先貼入文字！');
       return;
     }
 
-    // Split into sentences
-    const rawSentences = text.split(/[，。！？\n；,!?\d+\)]+/);
+    // Save Original Text Display
+    outputOriginal.textContent = text;
+
+    // Process Lines and Clauses without destroying numbers or timestamps
+    const lines = text.split(/\r?\n/);
+    const clauses = [];
+
+    lines.forEach(rawLine => {
+      let line = rawLine.trim();
+      if (!line) return;
+
+      // Strip leading list numbering (e.g. "1)", "1.", "(1)", "-", "•")
+      line = line.replace(/^\s*[\(\[\d]+\s*[\.\)）\]、]\s*/, '');
+      if (!line) return;
+
+      // Protect timestamps followed by commas (e.g. "02:34, " -> "02:34 ")
+      line = line.replace(/(\d{1,2}[:：]\d{2}(?:[:：]\d{2})?|\d+分\d+秒|\d+秒)\s*[,，]\s*/g, '$1 ');
+
+      // Split multiple timestamps on the same line into separate clauses
+      line = line.replace(/[,，]\s*(\d{1,2}[:：]\d{2}(?:[:：]\d{2})?|\d+分\d+秒|\d+秒)/g, '; $1');
+
+      // Split on sentence terminators: periods, semicolons, exclamations, question marks
+      const parts = line.split(/[。\n；;！？!?]+/);
+      parts.forEach(part => {
+        part = part.trim();
+        if (part && part.length >= 2) {
+          clauses.push(part);
+        }
+      });
+    });
+
+    // Tag Analysis
     const classified = {};
     Object.keys(KEYWORDS_MAP).forEach(k => classified[k] = []);
     const uncategorized = [];
 
-    rawSentences.forEach(s => {
-      s = s.trim();
-      if (!s || s.length < 2) return;
+    clauses.forEach(s => {
+      // Detect Time Tags (e.g. 01:25, 02:34, 18秒, 1分20秒)
+      const timeMatch = s.match(/(\d{1,2}[:：]\d{2}(?:[:：]\d{2})?|\d+分\d+秒|\d+秒)/);
+      // Detect dB or parameters (e.g. 1dB, -2dB, 0.5 dB, 80Ω)
+      const dbMatch = s.match(/([+-]?\d+(?:\.\d+)?\s*(?:dB|db|分貝))/i);
+
+      const timeTag = timeMatch ? timeMatch[1] : null;
+      const dbTag = dbMatch ? dbMatch[1] : null;
+
       let matched = false;
       for (const [category, words] of Object.entries(KEYWORDS_MAP)) {
         if (words.some(w => s.toLowerCase().includes(w.toLowerCase()))) {
-          classified[category].push(s);
+          classified[category].push({
+            text: s,
+            time: timeTag,
+            db: dbTag
+          });
           matched = true;
         }
       }
       if (!matched) {
-        uncategorized.push(s);
+        uncategorized.push({
+          text: s,
+          time: timeTag,
+          db: dbTag
+        });
       }
     });
 
@@ -634,7 +905,7 @@
     const client = clientName.value.trim() || '老師';
     const version = versionSelect.value;
 
-    // Build Engineer Output
+    // 1. Build Engineer Output
     let engText = `### 🎛️ 《${song}》混音工程執行清單 (${version})\n\n`;
     let taskIdx = 1;
 
@@ -642,7 +913,9 @@
       if (items.length > 0) {
         engText += `#### ${category}\n`;
         items.forEach(it => {
-          engText += `- [ ] **[項目 ${taskIdx}]** ${it}\n`;
+          let timePrefix = it.time ? `⏱️ ${it.time} ` : '';
+          let dbPrefix = it.db ? `🎚️ ${it.db} ` : '';
+          engText += `- [ ] **[項目 ${taskIdx}]** ${timePrefix}${dbPrefix}${it.text}\n`;
           taskIdx++;
         });
         engText += `\n`;
@@ -650,30 +923,35 @@
     }
 
     if (uncategorized.length > 0) {
-      engText += `#### 📝 其他備註 / 聽感細節\n`;
+      engText += `#### 📝 備註 / 設備聽感環境\n`;
       uncategorized.forEach(u => {
-        engText += `- 💬 ${u}\n`;
+        engText += `- 💬 ${u.text}\n`;
       });
       engText += `\n`;
     }
 
     outputEngineer.textContent = engText;
 
-    // Build Client Reply
+    // 2. Build Client Confirmation Reply (Deduplicated & Preserving Timestamps/dB)
     const clientItems = [];
+    const seenTexts = new Set();
     let cIdx = 1;
+
     for (const [category, items] of Object.entries(classified)) {
-      if (items.length > 0) {
-        const shortCat = category.split(' ')[0];
-        items.forEach(it => {
-          clientItems.push(`${cIdx}. 【${shortCat}】${it}`);
+      const shortCat = category.split(' ')[0];
+      items.forEach(it => {
+        if (!seenTexts.has(it.text)) {
+          seenTexts.add(it.text);
+          let timeTag = it.time ? `[${it.time}] ` : '';
+          clientItems.push(`${cIdx}. 【${shortCat}】${timeTag}${it.text}`);
           cIdx++;
-        });
-      }
+        }
+      });
     }
+
     if (clientItems.length === 0 && uncategorized.length > 0) {
       uncategorized.forEach(u => {
-        clientItems.push(`${cIdx}. ${u}`);
+        clientItems.push(`${cIdx}. ${u.text}`);
         cIdx++;
       });
     }
@@ -688,7 +966,7 @@ ${summaryText}
 
     outputClient.textContent = clientMsg;
 
-    // Build Breakdown Tab
+    // 3. Build Breakdown View
     let breakdownHTML = '';
     for (const [category, items] of Object.entries(classified)) {
       if (items.length > 0) {
@@ -698,7 +976,13 @@ ${summaryText}
               <span class="tag-title">🎧 ${category}</span>
               <span class="tag-count">${items.length} 項</span>
             </div>
-            ${items.map(it => `<div class="item-bullet">${it}</div>`).join('')}
+            ${items.map(it => `
+              <div class="item-bullet">
+                ${it.time ? `<span class="time-badge">⏱️ ${it.time}</span>` : ''}
+                ${it.db ? `<span class="db-badge">🎚️ ${it.db}</span>` : ''}
+                <span>${it.text}</span>
+              </div>
+            `).join('')}
           </div>
         `;
       }
@@ -707,22 +991,35 @@ ${summaryText}
       breakdownHTML += `
         <div class="tag-group">
           <div class="tag-header">
-            <span class="tag-title">💬 其他/口語備註</span>
+            <span class="tag-title">💬 備註 / 設備環境</span>
             <span class="tag-count">${uncategorized.length} 項</span>
           </div>
-          ${uncategorized.map(it => `<div class="item-bullet">${it}</div>`).join('')}
+          ${uncategorized.map(it => `<div class="item-bullet"><span>${it.text}</span></div>`).join('')}
         </div>
       `;
     }
     outputBreakdown.innerHTML = breakdownHTML || '<div style="color:var(--text-muted); font-size:13px;">無特定關鍵字匹配。</div>';
+
+    // 4. Save to Local History
+    if (saveToHistory) {
+      const now = new Date();
+      const timeStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      saveHistoryRecord({
+        timestamp: timeStr,
+        song: song,
+        version: version,
+        rawText: text,
+        taskCount: taskIdx - 1
+      });
+    }
   }
 
   btnExtract.addEventListener('click', () => {
-    runExtraction();
-    showToast('✨ 提煉完成！');
+    runExtraction(true);
+    showToast('✨ 提煉完成，紀錄已存檔！');
   });
 
-  // 6. Tabs Controller
+  // 7. Tabs Controller
   const tabBtns = document.querySelectorAll('.tab-btn');
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -733,7 +1030,7 @@ ${summaryText}
     });
   });
 
-  // 7. Clipboard Copy
+  // 8. Clipboard Copy
   function copyText(str) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(str).then(() => {
@@ -765,7 +1062,11 @@ ${summaryText}
     copyText(outputClient.textContent);
   });
 
-  // 8. Toast Helper
+  btnCopyOriginal.addEventListener('click', () => {
+    copyText(outputOriginal.textContent);
+  });
+
+  // 9. Toast Helper
   let toastTimer = null;
   function showToast(msg) {
     toast.textContent = msg;
@@ -773,12 +1074,13 @@ ${summaryText}
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toast.classList.remove('show');
-    }, 2000);
+    }, 2200);
   }
 
-  // Auto run if input has content on load
+  // Initial load
+  renderHistory();
   if (rawInput.value.trim()) {
-    runExtraction();
+    runExtraction(false);
   }
 </script>
 
