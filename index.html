@@ -913,9 +913,9 @@
       if (items.length > 0) {
         engText += `#### ${category}\n`;
         items.forEach(it => {
-          let cleanText = it.text;
-          if (it.time) {
-            cleanText = cleanText.replace(new RegExp('^\\s*' + it.time.replace(/([.*+?^=!:${}()|\\[\\]\\/\\\\])/g, "\\$1") + '\\s*'), '');
+          let cleanText = it.text.trim();
+          if (it.time && cleanText.startsWith(it.time)) {
+            cleanText = cleanText.slice(it.time.length).replace(/^[,，\s]+/, '').trim();
           }
           let timePrefix = it.time ? `⏱️ ${it.time} ` : '';
           let dbPrefix = it.db && !cleanText.includes(it.db) ? `🎚️ ${it.db} ` : '';
@@ -946,9 +946,9 @@
       items.forEach(it => {
         if (!seenTexts.has(it.text)) {
           seenTexts.add(it.text);
-          let cleanText = it.text;
-          if (it.time) {
-            cleanText = cleanText.replace(new RegExp('^\\s*' + it.time.replace(/([.*+?^=!:${}()|\\[\\]\\/\\\\])/g, "\\$1") + '\\s*'), '');
+          let cleanText = it.text.trim();
+          if (it.time && cleanText.startsWith(it.time)) {
+            cleanText = cleanText.slice(it.time.length).replace(/^[,，\s]+/, '').trim();
           }
           let timeTag = it.time ? `[${it.time}] ` : '';
           clientItems.push(`${cIdx}. 【${shortCat}】${timeTag}${cleanText}`);
